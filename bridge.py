@@ -5,18 +5,18 @@ from Players_VS import *
 class bridge:
     @staticmethod
     def player_info(ally):
-        ally = [874672511]
-
         player = Player(ally)
-        player.write()
+        rez = player.write()
+
+        return rez
 
     @staticmethod
     def players_vs(ally):
-        ally = [874672511, 484137946]
-
         players = []
 
         for code in ally:
             players.append(Players_VS(code))
 
-        Players_VS.write(players)
+        rez = Players_VS.write(players)
+
+        return rez

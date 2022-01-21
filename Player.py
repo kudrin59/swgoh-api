@@ -1,35 +1,16 @@
-from api import api, settings
 from func import *
 
 
 class Player:
-    @staticmethod
-    def con():
-        global auth
-        global sw
-
-        auth = settings('kudrin', '137235')
-        sw = api(auth)
-
     def __init__(self, ally):
-        self.con()
-
-        payload = {'allycodes': ally, 'language': "RUS_RU", 'enums': True, 'project': {"name": 1,
-                                                                                       "guildName": 1,
-                                                                                       "stats": 1,
-                                                                                       "roster": 1,
-                                                                                       "arena": 1,
-                                                                                       "grandArena": 1
-                                                                                       }}
-        player = sw.fetchPlayers(payload)
-        player = player[0]
+        player = func.get_info(ally)
 
         self.name = player['name']
         self.guildName = player['guildName']
         self.allGM = player['stats'][0]['value']
         self.squadGm = player['stats'][1]['value']
         self.flotGm = player['stats'][2]['value']
-        self.zetas, self.omicrons, self.omicron_units = func.get_zeta_omicron(sw, player['roster'])
+        self.zetas, self.omicrons, self.omicron_units = func.get_zeta_omicron(player['roster'])
 
         self.ga_lyga = func.get_ga(player['grandArena'])
 
@@ -48,66 +29,67 @@ class Player:
         self.mods = func.get_mods(player['roster'])
 
     def write(self):
-        print("==== Обзор ====")
-        print("\tНикнейм (Гильдия):\t\t{} ({})".format(self.name, self.guildName))
-        print("\tМощь:\t\t\t\t\t{}".format(self.allGM))
-        print("\tПерсонажи ГМ:\t\t\t{}".format(self.squadGm))
-        print("\tФлот ГМ:\t\t\t\t{}".format(self.flotGm))
-        print("\tДзет:\t\t\t\t\t{}".format(self.zetas))
-        print("\tОмикронов:\t\t\t\t{}".format(self.omicrons))
-        print()
+        rez = ""
+        rez += "```==== Обзор ====\n"
+        rez += "Никнейм (Гильдия): {} ({})\n".format(self.name, self.guildName)
+        rez += "Мощь: {}\n".format(self.allGM)
+        rez += "Персонажи ГМ: {}\n".format(self.squadGm)
+        rez += "Флот ГМ: {}\n".format(self.flotGm)
+        rez += "Дзет: {}\n".format(self.zetas)
+        rez += "Омикронов: {}```".format(self.omicrons)
 
         if len(self.omicron_units) > 0:
-            print("==== Омикроны ====")
+            rez += "```==== Омикроны ====\n"
             for unit in self.omicron_units:
-                print("{}: Тир {}, {}⭐".format(unit[0],unit[2], unit[1]))
-            print()
+                rez += ("{}: Тир {}, {}⭐\n".format(unit[0], unit[2], unit[1]))
+            rez += "```"
 
-        print("==== Арена ====")
-        print("Лига: {}".format(self.ga_lyga))
-        print("Отряд (Место - {}):".format(self.squadRank))
-        print("\tСостав:\t\t\t\t\t{}".format(self.teamSquad))
-        print("Флот (Место - {}):".format(self.flotRank))
-        print("\tФлагман:\t\t\t\t{}".format(self.flotCapital))
-        print("\tСтартовый состав:\t\t{}".format(self.flotStart))
-        print("\tПодкрепление:\t\t\t{}".format(self.flotReinforcement))
-        print()
+        rez += "```==== Арена ====\n"
+        rez += "Лига: {}\n".format(self.ga_lyga)
+        rez += "Отряд (Место - {}):\n".format(self.squadRank)
+        rez += "Состав: {}\n".format(self.teamSquad)
+        rez += "Флот (Место - {}):\n".format(self.flotRank)
+        rez += "Флагман: {}\n".format(self.flotCapital)
+        rez += "Стартовый состав: {}\n".format(self.flotStart)
+        rez += "Подкрепление: {}```".format(self.flotReinforcement)
 
-        print("==== Флагманы ====")
-        print("{}".format(self.capitals))
-        print()
+        rez += "```==== Флагманы ====\n"
+        rez += "{}```".format(self.capitals)
 
         if len(self.toons) > 0:
-            print("==== Одиночные Путешествия ====")
+            rez += "```==== Одиночные Путешествия ====\n"
             for unit in self.toons:
-                print("\t{}: Тир {}, {}⭐".format(unit[0], unit[1], unit[2]))
-            print()
+                rez += "{}: Тир {}, {}⭐\n".format(unit[0], unit[1], unit[2])
+            rez += "```"
 
         if len(self.toons2) > 0:
-            print("==== Путешествие гильдий ====")
+            rez += "```==== Путешествие гильдий ====\n"
             for unit in self.toons2:
-                print("\t{}: Тир {}, {}⭐".format(unit[0], unit[1], unit[2]))
-            print()
+                rez += "{}: Тир {}, {}⭐\n".format(unit[0], unit[1], unit[2])
+            rez += "```"
 
         if len(self.toons3) > 0:
-            print("==== Легенды ====")
+            rez += "```==== Легенды ====\n"
             for unit in self.toons3:
-                print("\t{}: Тир {}, {}⭐".format(unit[0], unit[1], unit[2]))
-            print()
+                rez += "{}: Тир {}, {}⭐\n".format(unit[0], unit[1], unit[2])
+            rez += "```"
 
         if len(self.toons4) > 0:
-            print("==== Завоевания ====")
+            rez += "```==== Завоевания ====\n"
             for unit in self.toons4:
-                print("\t{}: Тир {}, {}⭐".format(unit[0], unit[1], unit[2]))
-            print()
+                rez += "{}: Тир {}, {}⭐\n".format(unit[0], unit[1], unit[2])
+            rez += "```"
 
-        print("==== Тиры ====")
+        rez += "```==== Тиры ====\n"
         for gear in self.gears:
             if gear[1] > 0:
-                print("{}: {}".format(gear[0], gear[1]))
-        print()
+                rez += "{}: {}\n".format(gear[0], gear[1])
+        rez += "```"
 
-        print("==== Моды ====")
+        rez += "```==== Моды ====\n"
         for mod in self.mods:
             if mod[2] > 0:
-                print("{}: {}".format(mod[1], mod[2]))
+                rez += "{}: {}\n".format(mod[1], mod[2])
+        rez += "```"
+
+        return rez

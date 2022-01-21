@@ -1,4 +1,39 @@
+from api import api, settings
+
+
 class func:
+    @staticmethod
+    def con():
+        global auth
+        global sw
+
+        date = open('swgoh_help.txt', 'r').readline().split(";")
+        user_login = date[0]
+        user_pass = date[1]
+
+        auth = settings(user_login, user_pass)
+        sw = api(auth)
+
+    @staticmethod
+    def get_info(ally):
+        func.con()
+
+        payload = {}
+        payload['allycodes'] = ally
+        payload['language'] = "rus_ru"
+        payload['enums'] = True
+        payload['project'] = {"name": 1,
+                              "guildName": 1,
+                              "stats": 1,
+                              "roster": 1,
+                              "arena": 1,
+                              'grandArena': 1
+                              }
+
+        player = sw.fetchPlayers(payload)
+
+        return player[0]
+
     @staticmethod
     def get_ga(seasons):
         divisions = {
@@ -48,7 +83,9 @@ class func:
         return rez
 
     @staticmethod
-    def get_zeta_omicron(sw, units):
+    def get_zeta_omicron(units):
+        func.con()
+
         payload = {}
         payload['collection'] = "skillList"
         payload['language'] = "rus_ru"
