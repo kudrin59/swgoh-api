@@ -47,4 +47,3 @@ class Players_VS:
                 print(line[0])
             else:
                 print("{0}\t::\t{1}\tvs\t{2}".format(line[0], line[1], line[2]))
-        print()

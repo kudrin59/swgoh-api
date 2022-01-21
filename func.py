@@ -1,5 +1,53 @@
 class func:
     @staticmethod
+    def get_ga(seasons):
+        divisions = {
+            5: 5,
+            10: 4,
+            15: 3,
+            20: 2,
+            25: 1
+        }
+
+        leagues = {
+            "CARBONITE": "Карбонитовая",
+            "BRONZIUM": "Бронзиумная",
+            "CHROMIUM": "Хромиумная",
+            "AURODIUM": "Ауродиумная",
+            "KYBER": "Кайбер"
+        }
+
+        season = seasons[len(seasons) - 1]
+
+        league = leagues[season['league']]
+        division = divisions[season['division']]
+        rank = season['rank']
+
+        rez = "{} {}, ранг - {}".format(league, division, rank)
+
+        return rez
+
+    @staticmethod
+    def get_mods(units):
+        rez = [["pips", "Т12+", 0, 6], ["UNITSTATSPEED", "Скорость 15+", 0, 15], ["UNITSTATSPEED", "Скорость 20+", 0, 20], ["UNITSTATSPEED", "Скорость 25+", 0, 25]]
+        max_speed = 999
+
+        for unit in units:
+            for mod in unit['mods']:
+                if mod['pips'] >= rez[0][3]:
+                    rez[0][2] += 1
+                for stat in mod['secondaryStat']:
+                    for i in range(1, len(rez)):
+                        if i == len(rez) - 1:
+                            next_value = max_speed
+                        else:
+                            next_value = rez[i + 1][3]
+                        if (stat['unitStat'] == rez[i][0]) and (stat['value'] >= rez[i][3]) and (stat['value'] < next_value):
+                            rez[i][2] += 1
+
+        return rez
+
+    @staticmethod
     def get_zeta_omicron(sw, units):
         payload = {}
         payload['collection'] = "skillList"
@@ -45,6 +93,7 @@ class func:
     def get_gears(units):
         # Название, Количество, От какого рела, До какого рела
         rez = [["Т13", 0, 0, 9], ["Р1-4", 0, 1, 4], ["Р5", 0, 5, 5], ["Р6", 0, 6, 6], ["Р7", 0, 7, 7], ["Р8", 0, 8, 8], ["Р9", 0, 9, 9]]
+
         for unit in units:
             if unit['combatType'] == 'CHARACTER':
                 for gear in rez:

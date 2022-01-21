@@ -5,7 +5,7 @@ from Players_VS import *
 class bridge:
     @staticmethod
     def player_info(ally):
-        ally = [484137946]
+        ally = [874672511]
 
         player = Player(ally)
         player.write()
