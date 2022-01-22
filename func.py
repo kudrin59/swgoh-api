@@ -118,6 +118,7 @@ class func:
                             omicrons += 1
                             temp_unit = [unit['nameKey'], unit['rarity'], unit['gear']]
                             omicron_units.append(temp_unit)
+                            zetas += 1
                         elif skill['tier'] == skill['tiers'] - 1:
                             zetas += 1
                     else:

@@ -41,8 +41,6 @@ async def on_ready():
 
 @client.command()
 async def help(ctx):
-    global prefix
-
     emb = discord.Embed()
 
     emb.add_field(name='{}reg <<ALLY>>'.format(prefix), value='Сохранить ALLYCODE')
@@ -84,6 +82,7 @@ async def reg(ctx, ally=None):
 
 @client.command()
 async def p(ctx, ally=None):
+
     info = "Информация об игроке: !p <<ALLY>>"
     author = ctx.message.author
     author_id = ctx.message.author.id
