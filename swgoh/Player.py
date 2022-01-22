@@ -1,4 +1,4 @@
-from func import *
+from swgoh.func import *
 
 
 class Player:

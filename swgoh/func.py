@@ -1,4 +1,4 @@
-from api import api, settings
+from swgoh.api import *
 
 
 class func:

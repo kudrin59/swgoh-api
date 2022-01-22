@@ -1,5 +1,5 @@
-from Player import *
-from Players_VS import *
+from swgoh.Player import *
+from swgoh.Players_VS import *
 
 
 class bridge:

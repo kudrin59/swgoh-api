@@ -1,6 +1,8 @@
 import discord
 from discord.ext import commands
-import numpy as np
+
+import func_bot
+from func_bot import *
 
 import bridge
 from bridge import *
@@ -9,29 +11,7 @@ prefix = '!'
 client = commands.Bot(command_prefix=prefix)
 client.remove_command('help')
 
-users = []
-
-
-def load_users():
-    global users
-    try:
-        users = np.load('users.npy')
-    except FileNotFoundError:
-        np.save("users", users)
-    print("Загрузка пользователей!")
-
-
-def save_users():
-    global users
-    np.save("users", users)
-    print("Сохранение пользователей!")
-
-
-def get_user_ally(author_id):
-    global users
-    for user in users:
-        if int(user[0]) == author_id:
-            return user[1]
+users = func_bot.load_users()
 
 
 @client.event
@@ -75,7 +55,7 @@ async def reg(ctx, ally=None):
         users.append(user)
         rez = "Код сохранён!"
 
-    save_users()
+    func_bot.save_users(users)
     await ctx.send(f'{author.mention}\n'
                    f'{rez}\n')
 
@@ -88,7 +68,7 @@ async def p(ctx, ally=None):
     author_id = ctx.message.author.id
 
     if not ally:
-        ally = get_user_ally(author_id)
+        ally = func_bot.get_user_ally(author_id, users)
     if not ally:
         await ctx.send(f'{author.mention} {info}\n')
         return False
@@ -106,9 +86,9 @@ async def ga(ctx, ally=None, ally2=None):
 
     if not ally or not ally2:
         if not ally:
-            ally = get_user_ally(author_id)
+            ally = func_bot.get_user_ally(author_id, users)
         else:
-            ally2 = get_user_ally(author_id)
+            ally2 = func_bot.get_user_ally(author_id, users)
 
     if not ally or not ally2:
         await ctx.send(f'{author.mention} {info}\n')
@@ -120,6 +100,5 @@ async def ga(ctx, ally=None, ally2=None):
     await ctx.send(f'{author.mention}\n'
                    f'{date}')
 
-load_users()
 TOKEN = open('token.txt', 'r').readline()
 client.run(TOKEN)
