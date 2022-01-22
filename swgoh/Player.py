@@ -31,12 +31,12 @@ class Player:
     def write(self):
         rez = ""
         rez += "```==== Обзор ====\n"
-        rez += "Никнейм (Гильдия): {} ({})\n".format(self.name, self.guildName)
-        rez += "Мощь: {}\n".format(self.allGM)
-        rez += "Персонажи ГМ: {}\n".format(self.squadGm)
-        rez += "Флот ГМ: {}\n".format(self.flotGm)
-        rez += "Дзет: {}\n".format(self.zetas)
-        rez += "Омикронов: {}```".format(self.omicrons)
+        rez += "Ник (Гильдия)\t::\t{} ({})\n".format(self.name, self.guildName)
+        rez += "Мощь \t\t\t::\t{}\n".format(self.allGM)
+        rez += "Персонажи ГМ \t::\t{}\n".format(self.squadGm)
+        rez += "Флот ГМ  \t\t::\t{}\n".format(self.flotGm)
+        rez += "Дзет \t\t\t::\t{}\n".format(self.zetas)
+        rez += "Омикронов\t\t::\t{}```".format(self.omicrons)
 
         if len(self.omicron_units) > 0:
             rez += "```==== Омикроны ====\n"
@@ -83,13 +83,13 @@ class Player:
         rez += "```==== Тиры ====\n"
         for gear in self.gears:
             if gear[1] > 0:
-                rez += "{}: {}\n".format(gear[0], gear[1])
+                rez += "{}\t::\t{}\n".format(gear[0], gear[1])
         rez += "```"
 
         rez += "```==== Моды ====\n"
         for mod in self.mods:
             if mod[2] > 0:
-                rez += "{}: {}\n".format(mod[1], mod[2])
+                rez += "{}\t::\t{}\n".format(mod[1], mod[2])
         rez += "```"
 
         return rez

@@ -64,7 +64,7 @@ class func:
 
     @staticmethod
     def get_mods(units):
-        rez = [["pips", "Т12+", 0, 6], ["UNITSTATSPEED", "Скорость 15+", 0, 15],
+        rez = [["pips", "Т12+\t\t", 0, 6], ["UNITSTATSPEED", "Скорость 15+", 0, 15],
                ["UNITSTATSPEED", "Скорость 20+", 0, 20], ["UNITSTATSPEED", "Скорость 25+", 0, 25]]
         max_speed = 999
 
@@ -132,8 +132,8 @@ class func:
     @staticmethod
     def get_gears(units):
         # Название, Количество, От какого рела, До какого рела
-        rez = [["Т13", 0, 0, 9], ["Р1-4", 0, 1, 4], ["Р5", 0, 5, 5], ["Р6", 0, 6, 6], ["Р7", 0, 7, 7], ["Р8", 0, 8, 8],
-               ["Р9", 0, 9, 9]]
+        rez = [["Т13  ", 0, 0, 9], ["Р1-4 ", 0, 1, 4], ["Р5   ", 0, 5, 5], ["Р6   ", 0, 6, 6], ["Р7   ", 0, 7, 7], ["Р8   ", 0, 8, 8],
+               ["Р9   ", 0, 9, 9]]
 
         for unit in units:
             if unit['combatType'] == 'CHARACTER':

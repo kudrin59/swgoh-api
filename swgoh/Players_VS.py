@@ -24,10 +24,10 @@ class Players_VS:
         rez = ""
         names = []
         table = [
-            ["Мощь\t\t", 0, 0],
+            ["Мощь \t\t", 0, 0],
             ["Топ 80 ГМ\t", 0, 0],
-            ["Персонажи ГМ", 0, 0],
-            ["Флот ГМ\t", 0, 0],
+            ["Персонажи ГМ ", 0, 0],
+            ["Флот ГМ  \t", 0, 0],
             ["Ранг на арене", 0, 0],
             ["Ранг на флоте", 0, 0]
         ]
@@ -45,7 +45,7 @@ class Players_VS:
         rez += "```{} vs {}```".format(names[0], names[1])
         rez += "```========== Обзор ==========\n"
         for line in table:
-            rez += "{}\n\t{}\tvs\t{}\n".format(line[0], line[1], line[2])
+            rez += "{}\t::\t{}\tvs\t{}\n".format(line[0], line[1], line[2])
         rez += "```"
 
         table = []
@@ -56,7 +56,7 @@ class Players_VS:
         rez += "```========== Тиры ==========\n"
         for line in table:
             if line[1] > 0 or line[2] > 0:
-                rez += "{}\n\t{}\tvs\t{}\n".format(line[0], line[1], line[2])
+                rez += "{}\t::\t{}\tvs\t{}\n".format(line[0], line[1], line[2])
         rez += "```"
 
         table = []
@@ -67,7 +67,7 @@ class Players_VS:
         rez += "```========== Моды ==========\n"
         for line in table:
             if line[1] > 0 or line[2] > 0:
-                rez += "{}\n\t{}\tvs\t{}\n".format(line[0], line[1], line[2])
+                rez += "{}\t::\t{}\tvs\t{}\n".format(line[0], line[1], line[2])
         rez += "```"
 
         table = []
@@ -88,7 +88,7 @@ class Players_VS:
                 str2 = "Нет"
             else:
                 str2 = "{} ГМ {}⭐".format(line[3], line[4])
-            rez += "{}\n\t{}\tvs\t{}\n\n".format(line[0], str, str2)
+            rez += "{}\n{}\tvs\t{}\n\n".format(line[0], str, str2)
         rez += "```"
 
         return rez
