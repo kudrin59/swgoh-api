@@ -1,11 +1,10 @@
 import discord
 from discord.ext import commands
 
-import func_bot
-from func_bot import *
-
 import bridge
+import func_bot
 from bridge import *
+from func_bot import *
 
 prefix = '!'
 client = commands.Bot(command_prefix=prefix)
@@ -62,7 +61,6 @@ async def reg(ctx, ally=None):
 
 @client.command()
 async def p(ctx, ally=None):
-
     info = "Информация об игроке: !p <<ALLY>>"
     author = ctx.message.author
     author_id = ctx.message.author.id
@@ -99,6 +97,7 @@ async def ga(ctx, ally=None, ally2=None):
     date = bridge.players_vs(allys)
     await ctx.send(f'{author.mention}\n'
                    f'{date}')
+
 
 TOKEN = open('token.txt', 'r').readline()
 client.run(TOKEN)
