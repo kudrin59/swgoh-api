@@ -4,19 +4,54 @@ from swgoh.api import *
 class func:
     @staticmethod
     def con():
-        global auth
-        global sw
-
         date = open('swgoh_help.txt', 'r').readline().split(";")
         user_login = date[0]
         user_pass = date[1]
 
         auth = settings(user_login, user_pass)
         sw = api(auth)
+        return sw
 
     @staticmethod
-    def get_info(ally):
-        func.con()
+    def get_toons_compare(units):
+        list = ["Падме Амидала", "Старкиллер", "Рыцарь-джедай Реван", "Дарт Реван", "Дарт Малак", "Генерал Скайуокер",
+                "Рыцарь-джедай Люк Скайуокер", "Ват Тамбор", "Ки-Ади-Мунди", "Лорд Вейдер", "Мастер-джедай Кеноби",
+                "Мастер-джедай Люк Скайуокер", "Император Вечных ситхов",
+                "Верховный лидер Кайло Рен", "Рей", "Командир Асока Тано", "Мол", "Боба Фет (потомок джанго)", "Палач"]
+
+        rez = []
+        for chech_unit in list:
+            added = False
+            for unit in units:
+                if unit['nameKey'] == chech_unit:
+                    el = [chech_unit, unit['gp'], unit['rarity']]
+                    rez.append(el)
+                    added = True
+            if not added:
+                el = [chech_unit, "Отсутствует", 0]
+                rez.append(el)
+
+        return rez
+
+    @staticmethod
+    def get_top80(units):
+        list = []
+
+        for unit in units:
+            if unit['combatType'] == 'CHARACTER':
+                list.append(unit['gp'])
+
+        list.sort(reverse=True)
+
+        sum_gp = 0
+        for i in range(0, len(list)):
+            sum_gp += list[i]
+
+        return sum_gp
+
+    @staticmethod
+    def get_player(ally):
+        sw = func.con()
 
         payload = {}
         payload['allycodes'] = ally
@@ -86,7 +121,7 @@ class func:
 
     @staticmethod
     def get_zeta_omicron(units):
-        func.con()
+        sw = func.con()
 
         payload = {}
         payload['collection'] = "skillList"
@@ -109,7 +144,6 @@ class func:
 
         zetas = 0
         omicrons = 0
-
         omicron_units = []
 
         for unit in units:
@@ -132,7 +166,8 @@ class func:
     @staticmethod
     def get_gears(units):
         # Название, Количество, От какого рела, До какого рела
-        rez = [["Т13  ", 0, 0, 9], ["Р1-4 ", 0, 1, 4], ["Р5   ", 0, 5, 5], ["Р6   ", 0, 6, 6], ["Р7   ", 0, 7, 7], ["Р8   ", 0, 8, 8],
+        rez = [["Т13  ", 0, 0, 9], ["Р1-4 ", 0, 1, 4], ["Р5   ", 0, 5, 5], ["Р6   ", 0, 6, 6], ["Р7   ", 0, 7, 7],
+               ["Р8   ", 0, 8, 8],
                ["Р9   ", 0, 9, 9]]
 
         for unit in units:

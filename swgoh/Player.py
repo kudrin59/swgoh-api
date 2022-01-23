@@ -3,11 +3,14 @@ from swgoh.func import *
 
 class Player:
     def __init__(self, ally):
-        player = func.get_info(ally)
+        player = func.get_player(ally)
 
         self.name = player['name']
         self.guildName = player['guildName']
         self.allGM = player['stats'][0]['value']
+
+        self.top80gm = func.get_top80(player['roster'])
+
         self.squadGm = player['stats'][1]['value']
         self.flotGm = player['stats'][2]['value']
         self.zetas, self.omicrons, self.omicron_units = func.get_zeta_omicron(player['roster'])
@@ -22,7 +25,9 @@ class Player:
 
         self.capitals = func.get_capitals(player['roster'])
 
-        self.toons, self.toons2, self.toons3, self.toons4 = func.get_toons(player['roster'])
+        self.toons = func.get_toons_compare(player['roster'])
+
+        self.toons1, self.toons2, self.toons3, self.toons4 = func.get_toons(player['roster'])
 
         self.gears = func.get_gears(player['roster'])
 
@@ -56,9 +61,9 @@ class Player:
         rez += "```==== Флагманы ====\n"
         rez += "{}```".format(self.capitals)
 
-        if len(self.toons) > 0:
+        if len(self.toons1) > 0:
             rez += "```==== Одиночные Путешествия ====\n"
-            for unit in self.toons:
+            for unit in self.toons1:
                 rez += "{}: Тир {}, {}⭐\n".format(unit[0], unit[1], unit[2])
             rez += "```"
 
@@ -91,5 +96,81 @@ class Player:
             if mod[2] > 0:
                 rez += "{}\t::\t{}\n".format(mod[1], mod[2])
         rez += "```"
+
+        return rez
+
+    @staticmethod
+    def compare(player):
+        rez = ""
+        names = []
+        table = [
+            ["Мощь \t\t", 0, 0],
+            ["Топ 80 ГМ\t", 0, 0],
+            ["Персонажи ГМ ", 0, 0],
+            ["Флот ГМ  \t", 0, 0],
+            ["Ранг на арене", 0, 0],
+            ["Ранг на флоте", 0, 0]
+        ]
+
+        sep = "```"
+
+        for i in range(0, len(player)):
+            names.append(player[i].name)
+            row = i + 1
+            table[0][row] = player[i].allGM
+            table[1][row] = player[i].top80gm
+            table[2][row] = player[i].squadGm
+            table[3][row] = player[i].flotGm
+            table[4][row] = player[i].squadRank
+            table[5][row] = player[i].flotRank
+
+        rez += f"{sep}\n{names[0]} vs {names[1]}\n{sep}"
+        rez += f"{sep}\n========== Обзор ==========\n"
+        for line in table:
+            rez += "{}\t::\t{}\tvs\t{}\n".format(line[0], line[1], line[2])
+        rez += f"{sep}\n"
+
+        table = []
+        for i in range(len(player[0].gears)):
+            add = [player[0].gears[i][0], player[0].gears[i][1], player[1].gears[i][1]]
+            table.append(add)
+
+        rez += f"{sep}\n========== Тиры ==========\n"
+        for line in table:
+            if line[1] > 0 or line[2] > 0:
+                rez += "{}\t::\t{}\tvs\t{}\n".format(line[0], line[1], line[2])
+        rez += f"{sep}\n"
+
+        table = []
+        for i in range(len(player[0].mods)):
+            add = [player[0].mods[i][1], player[0].mods[i][2], player[1].mods[i][2]]
+            table.append(add)
+
+        rez += f"{sep}\n========== Моды ==========\n"
+        for line in table:
+            if line[1] > 0 or line[2] > 0:
+                rez += "{}\t::\t{}\tvs\t{}\n".format(line[0], line[1], line[2])
+        rez += f"{sep}\n"
+
+        table = []
+        for i in range(len(player[0].toons)):
+            add = [player[0].toons[i][0], player[0].toons[i][1], player[0].toons[i][2], player[1].toons[i][1],
+                   player[1].toons[i][2]]
+            table.append(add)
+
+        rez += f"{sep}\n========== Путешествия ==========\n"
+        for line in table:
+            if line[1] == line[3] == "Отсутствует":
+                continue
+            if line[1] == "Отсутствует":
+                str = "Нет"
+            else:
+                str = "{} ГМ {}⭐".format(line[1], line[2])
+            if line[3] == "Отсутствует":
+                str2 = "Нет"
+            else:
+                str2 = "{} ГМ {}⭐".format(line[3], line[4])
+            rez += "{}\n{}\tvs\t{}\n\n".format(line[0], str, str2)
+        rez += f"{sep}\n"
 
         return rez

@@ -1,5 +1,4 @@
 from swgoh.Player import *
-from swgoh.Players_VS import *
 
 
 class bridge:
@@ -11,12 +10,12 @@ class bridge:
         return rez
 
     @staticmethod
-    def players_vs(ally):
+    def players_compare(ally):
         players = []
 
         for code in ally:
-            players.append(Players_VS(code))
+            players.append(Player(code))
 
-        rez = Players_VS.write(players)
+        rez = Player.compare(players)
 
         return rez

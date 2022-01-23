@@ -94,7 +94,7 @@ async def ga(ctx, ally=None, ally2=None):
 
     allys = [ally, ally2]
 
-    date = bridge.players_vs(allys)
+    date = bridge.players_compare(allys)
     await ctx.send(f'{author.mention}\n'
                    f'{date}')
 
