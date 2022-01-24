@@ -6,6 +6,7 @@ class Player:
         player = func.get_player(ally)
 
         self.name = player['name']
+        print(f"Запрошена информация об игроке: {self.name}")
         self.guildName = player['guildName']
         self.allGM = player['stats'][0]['value']
 
@@ -33,89 +34,190 @@ class Player:
 
         self.mods = func.get_mods(player['roster'])
 
-    def write(self):
-        rez = ""
-        rez += "```==== Обзор ====\n"
-        rez += "Ник (Гильдия)\t::\t{} ({})\n".format(self.name, self.guildName)
-        rez += "Мощь \t\t\t::\t{}\n".format(self.allGM)
-        rez += "Персонажи ГМ \t::\t{}\n".format(self.squadGm)
-        rez += "Флот ГМ  \t\t::\t{}\n".format(self.flotGm)
-        rez += "Дзет \t\t\t::\t{}\n".format(self.zetas)
-        rez += "Омикронов\t\t::\t{}```".format(self.omicrons)
+    def write_pc(self):
+        data = []
 
-        if len(self.omicron_units) > 0:
-            rez += "```==== Омикроны ====\n"
+        title = ""
+        value = ""
+
+        title += "Ник (Гильдия)\n"
+        value += "{} ({})\n".format(self.name, self.guildName)
+        title += "Мощь\n"
+        value += "{}\n".format(self.allGM)
+        title += "Персонажи ГМ\n"
+        value += "{}\n".format(self.squadGm)
+        title += "Флот ГМ\n"
+        value += "{}\n".format(self.flotGm)
+        title += "Дзет\n"
+        value += "{}\n".format(self.zetas)
+        title += "Омикронов\n"
+        value += "{}\n".format(self.omicrons)
+        data.append(['= Обзор =', title, value])
+
+        if self.omicrons > 0:
+            title = ""
+            value = ""
             for unit in self.omicron_units:
-                rez += ("{}: Тир {}, {}⭐\n".format(unit[0], unit[2], unit[1]))
-            rez += "```"
+                title += unit[0]
+                value += ("Тир {}, {}⭐\n".format(unit[0], unit[2], unit[1]))
+            data.append(['= Омикроны =', title, value])
 
-        rez += "```==== Арена ====\n"
-        rez += "Лига: {}\n".format(self.ga_lyga)
-        rez += "Отряд (Место - {}):\n".format(self.squadRank)
-        rez += "Состав: {}\n".format(self.teamSquad)
-        rez += "Флот (Место - {}):\n".format(self.flotRank)
-        rez += "Флагман: {}\n".format(self.flotCapital)
-        rez += "Стартовый состав: {}\n".format(self.flotStart)
-        rez += "Подкрепление: {}```".format(self.flotReinforcement)
+        title = ""
+        value = ""
+        title += "Лига:\n"
+        value += "{}\n".format(self.ga_lyga)
+        title += "Место отряда:\n"
+        value += "{}\n".format(self.squadRank)
+        # title += "Состав:\n"
+        # value += "{}\n".format(self.teamSquad)
+        title += "Место флота:\n"
+        value += "{}\n".format(self.flotRank)
+        # title += "Флагман:\n"
+        # value += "{}\n".format(self.flotCapital)
+        # title += "Стартовый состав:\n"
+        # value += "{}\n".format(self.flotStart)
+        # title += "Подкрепление:\n"
+        # value += "{}\n".format(self.flotReinforcement)
+        data.append(['= Арена =', title, value])
 
-        rez += "```==== Флагманы ====\n"
-        rez += "{}```".format(self.capitals)
+        if len(self.capitals) > 0:
+            title = "= Флагманы ="
+            value = self.capitals
+            data.append([title, value])
 
         if len(self.toons1) > 0:
-            rez += "```==== Одиночные Путешествия ====\n"
+            title = ""
+            value = ""
             for unit in self.toons1:
-                rez += "{}: Тир {}, {}⭐\n".format(unit[0], unit[1], unit[2])
-            rez += "```"
+                title += "{}\n".format(unit[0])
+                value += "Тир {}, {}⭐\n".format(unit[1], unit[2])
+            data.append(['= Одиночные Путешествия =', title, value])
 
         if len(self.toons2) > 0:
-            rez += "```==== Путешествие гильдий ====\n"
+            title = ""
+            value = ""
             for unit in self.toons2:
-                rez += "{}: Тир {}, {}⭐\n".format(unit[0], unit[1], unit[2])
-            rez += "```"
+                title += "{}\n".format(unit[0])
+                value += "Тир {}, {}⭐\n".format(unit[1], unit[2])
+            data.append(['= Путешествия Гильдий =', title, value])
 
         if len(self.toons3) > 0:
-            rez += "```==== Легенды ====\n"
+            title = ""
+            value = ""
             for unit in self.toons3:
-                rez += "{}: Тир {}, {}⭐\n".format(unit[0], unit[1], unit[2])
-            rez += "```"
+                title += "{}\n".format(unit[0])
+                value += "Тир {}, {}⭐\n".format(unit[1], unit[2])
+            data.append(['= Легенды =', title, value])
 
         if len(self.toons4) > 0:
-            rez += "```==== Завоевания ====\n"
+            title = ""
+            value = ""
             for unit in self.toons4:
-                rez += "{}: Тир {}, {}⭐\n".format(unit[0], unit[1], unit[2])
-            rez += "```"
+                title += "{}\n".format(unit[0])
+                value += "Тир {}, {}⭐\n".format(unit[1], unit[2])
+            data.append(['= Завоевания =', title, value])
 
-        rez += "```==== Тиры ====\n"
-        for gear in self.gears:
-            if gear[1] > 0:
-                rez += "{}\t::\t{}\n".format(gear[0], gear[1])
-        rez += "```"
+        if len(self.gears) > 0:
+            title = ""
+            value = ""
+            for gear in self.gears:
+                if gear[1] > 0:
+                    title += "{}\n".format(gear[0])
+                    value += "{}\n".format(gear[1])
+            data.append(['= Тиры =', title, value])
 
-        rez += "```==== Моды ====\n"
-        for mod in self.mods:
-            if mod[2] > 0:
-                rez += "{}\t::\t{}\n".format(mod[1], mod[2])
-        rez += "```"
+        if len(self.mods) > 0:
+            title = ""
+            value = ""
+            for mod in self.mods:
+                if mod[2] > 0:
+                    title += "{}\n".format(mod[1])
+                    value += "{}\n".format(mod[2])
+            data.append(['= Моды =', title, value])
 
-        return rez
+        return self.name, data
+
+    def write_phone(self):
+        data = []
+
+        rez = "Ник (Гильдия) : {} ({})\n".format(self.name, self.guildName)
+        rez += "Мощь : {}\n".format(self.allGM)
+        rez += "Персонажи ГМ : {}\n".format(self.squadGm)
+        rez += "Флот ГМ : {}\n".format(self.flotGm)
+        rez += "Дзет : {}\n".format(self.zetas)
+        rez += "Омикронов : {}\n".format(self.omicrons)
+        data.append(['= Обзор =', rez])
+
+        if self.omicrons > 0:
+            rez = ""
+            for unit in self.omicron_units:
+                rez += unit[0]
+                rez += ("Тир {}, {}⭐\n".format(unit[0], unit[2], unit[1]))
+            data.append(['= Омикроны =', rez])
+
+        rez = "Лига : {}\n".format(self.ga_lyga)
+        rez += "Место отряда : {}\n".format(self.squadRank)
+        rez += "Место флота : {}\n".format(self.flotRank)
+        data.append(['= Арена =', rez])
+
+        if len(self.capitals) > 0:
+            rez = self.capitals
+            data.append(["= Флагманы =", rez])
+
+        if len(self.toons1) > 0:
+            rez = ""
+            for unit in self.toons1:
+                rez += "{} : Тир {}, {}⭐\n".format(unit[0], unit[1], unit[2])
+            data.append(['= Одиночные Путешествия =', rez])
+
+        if len(self.toons2) > 0:
+            rez = ""
+            for unit in self.toons2:
+                rez += "{} : Тир {}, {}⭐\n".format(unit[0], unit[1], unit[2])
+            data.append(['= Путешествия Гильдий =', rez])
+
+        if len(self.toons3) > 0:
+            rez = ""
+            for unit in self.toons3:
+                rez += "{} : Тир {}, {}⭐\n".format(unit[0], unit[1], unit[2])
+            data.append(['= Легенды =', rez])
+
+        if len(self.toons4) > 0:
+            rez = ""
+            for unit in self.toons4:
+                rez += "{} : Тир {}, {}⭐\n".format(unit[0], unit[1], unit[2])
+            data.append(['= Завоевания =', rez])
+
+        if len(self.gears) > 0:
+            rez = ""
+            for gear in self.gears:
+                if gear[1] > 0:
+                    rez += "{} : {}\n".format(gear[0], gear[1])
+            data.append(['= Тиры =', rez])
+
+        if len(self.mods) > 0:
+            rez = ""
+            for mod in self.mods:
+                if mod[2] > 0:
+                    rez += "{} : {}\n".format(mod[1], mod[2])
+            data.append(['= Моды =', rez])
+
+        return self.name, data
 
     @staticmethod
-    def compare(player):
-        rez = ""
-        names = []
+    def compare_pc(player):
+        data = []
+
         table = [
-            ["Мощь \t\t", 0, 0],
-            ["Топ 80 ГМ\t", 0, 0],
+            ["Мощь", 0, 0],
+            ["Топ 80 ГМ", 0, 0],
             ["Персонажи ГМ ", 0, 0],
-            ["Флот ГМ  \t", 0, 0],
+            ["Флот ГМ", 0, 0],
             ["Ранг на арене", 0, 0],
             ["Ранг на флоте", 0, 0]
         ]
 
-        sep = "```"
-
         for i in range(0, len(player)):
-            names.append(player[i].name)
             row = i + 1
             table[0][row] = player[i].allGM
             table[1][row] = player[i].top80gm
@@ -124,33 +226,44 @@ class Player:
             table[4][row] = player[i].squadRank
             table[5][row] = player[i].flotRank
 
-        rez += f"{sep}\n{names[0]} vs {names[1]}\n{sep}"
-        rez += f"{sep}\n========== Обзор ==========\n"
+        title = ""
+        rez_player = ""
+        rez_player2 = ""
         for line in table:
-            rez += "{}\t::\t{}\tvs\t{}\n".format(line[0], line[1], line[2])
-        rez += f"{sep}\n"
+            title += "{}\n".format(line[0])
+            rez_player += "{}\n".format(line[1])
+            rez_player2 += "{}\n".format(line[2])
+        data.append(['= Обзор =', title, rez_player, rez_player2])
 
         table = []
         for i in range(len(player[0].gears)):
             add = [player[0].gears[i][0], player[0].gears[i][1], player[1].gears[i][1]]
             table.append(add)
 
-        rez += f"{sep}\n========== Тиры ==========\n"
+        title = ""
+        rez_player = ""
+        rez_player2 = ""
         for line in table:
             if line[1] > 0 or line[2] > 0:
-                rez += "{}\t::\t{}\tvs\t{}\n".format(line[0], line[1], line[2])
-        rez += f"{sep}\n"
+                title += "{}\n".format(line[0])
+                rez_player += "{}\n".format(line[1])
+                rez_player2 += "{}\n".format(line[2])
+        data.append(['= Тиры =', title, rez_player, rez_player2])
 
         table = []
         for i in range(len(player[0].mods)):
             add = [player[0].mods[i][1], player[0].mods[i][2], player[1].mods[i][2]]
             table.append(add)
 
-        rez += f"{sep}\n========== Моды ==========\n"
+        title = ""
+        rez_player = ""
+        rez_player2 = ""
         for line in table:
             if line[1] > 0 or line[2] > 0:
-                rez += "{}\t::\t{}\tvs\t{}\n".format(line[0], line[1], line[2])
-        rez += f"{sep}\n"
+                title += "{}\n".format(line[0])
+                rez_player += "{}\n".format(line[1])
+                rez_player2 += "{}\n".format(line[2])
+        data.append(['= Моды =', title, rez_player, rez_player2])
 
         table = []
         for i in range(len(player[0].toons)):
@@ -158,19 +271,99 @@ class Player:
                    player[1].toons[i][2]]
             table.append(add)
 
-        rez += f"{sep}\n========== Путешествия ==========\n"
+        title = ""
+        rez_player = ""
+        rez_player2 = ""
         for line in table:
             if line[1] == line[3] == "Отсутствует":
                 continue
             if line[1] == "Отсутствует":
-                str = "Нет"
+                temp_str = "Нет"
             else:
-                str = "{} ГМ {}⭐".format(line[1], line[2])
+                temp_str = "{} ГМ {}⭐".format(line[1], line[2])
             if line[3] == "Отсутствует":
-                str2 = "Нет"
+                temp_str_2 = "Нет"
             else:
-                str2 = "{} ГМ {}⭐".format(line[3], line[4])
-            rez += "{}\n{}\tvs\t{}\n\n".format(line[0], str, str2)
-        rez += f"{sep}\n"
+                temp_str_2 = "{} ГМ {}⭐".format(line[3], line[4])
+            title += "{}\n".format(line[0])
+            rez_player += "{}\n".format(temp_str)
+            rez_player2 += "{}\n".format(temp_str_2)
+        data.append(['= Путешествия =', title, rez_player, rez_player2])
 
-        return rez
+        player_name = [player[0].name, player[1].name]
+
+        return player_name, data
+
+    @staticmethod
+    def compare_phone(player):
+        data = []
+
+        table = [
+            ["Мощь", 0, 0],
+            ["Топ 80 ГМ", 0, 0],
+            ["Персонажи ГМ", 0, 0],
+            ["Флот ГМ", 0, 0],
+            ["Ранг на арене", 0, 0],
+            ["Ранг на флоте", 0, 0]
+        ]
+
+        for i in range(0, len(player)):
+            row = i + 1
+            table[0][row] = player[i].allGM
+            table[1][row] = player[i].top80gm
+            table[2][row] = player[i].squadGm
+            table[3][row] = player[i].flotGm
+            table[4][row] = player[i].squadRank
+            table[5][row] = player[i].flotRank
+
+        rez = ""
+        for line in table:
+            rez += "{}: {} vs {}\n".format(line[0], line[1], line[2])
+        data.append(["= Обзор =", rez])
+
+        table = []
+        for i in range(len(player[0].gears)):
+            add = [player[0].gears[i][0], player[0].gears[i][1], player[1].gears[i][1]]
+            table.append(add)
+
+        rez = ""
+        for line in table:
+            if line[1] > 0 or line[2] > 0:
+                rez += "{} : {} vs {}\n".format(line[0], line[1], line[2])
+        data.append(["= Тиры =", rez])
+
+        table = []
+        for i in range(len(player[0].mods)):
+            add = [player[0].mods[i][1], player[0].mods[i][2], player[1].mods[i][2]]
+            table.append(add)
+
+        rez = ""
+        for line in table:
+            if line[1] > 0 or line[2] > 0:
+                rez += "{} : {} vs {}\n".format(line[0], line[1], line[2])
+        data.append(["= Моды =", rez])
+
+        table = []
+        for i in range(len(player[0].toons)):
+            add = [player[0].toons[i][0], player[0].toons[i][1], player[0].toons[i][2], player[1].toons[i][1],
+                   player[1].toons[i][2]]
+            table.append(add)
+
+        rez = ""
+        for line in table:
+            if line[1] == line[3] == "Отсутствует":
+                continue
+            if line[1] == "Отсутствует":
+                temp_str = "Нет"
+            else:
+                temp_str = "{} ГМ {}⭐".format(line[1], line[2])
+            if line[3] == "Отсутствует":
+                temp_str_2 = "Нет"
+            else:
+                temp_str_2 = "{} ГМ {}⭐".format(line[3], line[4])
+            rez += "{}\n\t{} vs {}\n".format(line[0], temp_str, temp_str_2)
+        data.append(["= Путешествия =", rez])
+
+        player_name = [player[0].name, player[1].name]
+
+        return player_name, data
