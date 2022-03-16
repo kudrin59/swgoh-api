@@ -18,3 +18,4 @@ class bridge:
     @staticmethod
     def guild_info(ally):
         guild = Guild(ally)
+        return guild.info()
