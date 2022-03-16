@@ -6,7 +6,6 @@ class Player:
         player = func.get_player(ally)
 
         self.name = player['name']
-        print(f"Запрошена информация об игроке: {self.name}")
         self.guildName = player['guildName']
         self.allGM = player['stats'][0]['value']
 

@@ -81,6 +81,7 @@ async def p(ctx, ally=None):
         emb.add_field(name=author, value="Вы не указали <<ALLY>>, либо он некорректный!")
         await ctx.send(embed=emb)
         return False
+    print(f'[{datetime.datetime.utcnow()}] Пользователь "{author}": {prefix}p {ally}')
     try:
         mode = func_bot.get_user_mode(author_id)
         player_name, data = bridge.player_info(ally)
@@ -124,6 +125,7 @@ async def ga(ctx, ally=None, ally2=None):
         emb.add_field(name=author, value="Вы не указали <<ALLY>> <<ALLY>>, либо он некорректный!")
         await ctx.send(embed=emb)
         return False
+    print(f'[{datetime.datetime.utcnow()}] Пользователь "{author}": {prefix}ga {ally} {ally2}')
     try:
         allys = [ally, ally2]
         mode = func_bot.get_user_mode(author_id)
@@ -165,6 +167,7 @@ async def g(ctx, ally=None):
         emb.add_field(name=author, value="Вы не указали <<ALLY>>, либо он некорректный!")
         await ctx.send(embed=emb)
         return False
+    print(f'[{datetime.datetime.utcnow()}] Пользователь "{author}": {prefix}g {ally}')
     try:
         mode = func_bot.get_user_mode(author_id)
         guild_name, data = bridge.guild_info(ally)

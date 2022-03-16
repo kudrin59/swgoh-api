@@ -4,7 +4,6 @@ from swgoh.func import *
 class Guild:
     def __init__(self, ally):
         self.name, self.members, self.gm, players_ally = self.get_users_guild(ally)
-        print(f"Запрошена информация о гильии: {self.name}")
         users_data = self.get_users_info(players_ally)
         self.zetas, self.omicrons, self.count_omicrons = self.get_zeta_omicron(users_data)
         self.toons = self.get_toons(users_data)
