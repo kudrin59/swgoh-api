@@ -12,12 +12,11 @@ prefix = '!'
 client = commands.Bot(command_prefix=prefix)
 client.remove_command('help')
 
-users = func_bot.load_users()
-
 
 @client.event
 async def on_ready():
     print("Бот запущен!")
+    # bridge.guild_info(392532665)
 
 
 @client.command()
@@ -28,12 +27,13 @@ async def help(ctx):
     emb.add_field(name='Режим отображения', value=f'{prefix}mode <<pc/phone>>', inline=False)
     emb.add_field(name='Информация об игроке', value=f'{prefix}p <<ALLY>>', inline=False)
     emb.add_field(name='Сравнить игроков', value=f'{prefix}ga <<ALLY>> <<ALLY>>', inline=False)
+    emb.add_field(name='Сравнить игроков по персонажу', value=f'{prefix}!gac <<ALLY>> <<ALLY>> <<Точное название '
+                                                              f'персонажа>>', inline=False)
     await ctx.send(embed=emb)
 
 
 @client.command()
 async def reg(ctx, ally=None):
-    global users
     author = ctx.message.author
     author_id = ctx.message.author.id
 
@@ -43,10 +43,10 @@ async def reg(ctx, ally=None):
         await ctx.send(embed=emb)
         return False
 
-    if func_bot.set_user_ally(users, author_id, ally):
-        rez = "Ваш код перезаписан!"
+    if func_bot.set_user_ally(author_id, ally):
+        rez = "Ваш код изменён!"
     else:
-        rez = "Ваш код сохранён!"
+        rez = "Ваш код сохранён!\nБыл установлен режим отображения: 'phone'"
 
     emb = discord.Embed(colour=discord.Colour.green(), timestamp=datetime.datetime.utcnow())
     emb.add_field(name=author, value=rez)
@@ -55,7 +55,6 @@ async def reg(ctx, ally=None):
 
 @client.command()
 async def mode(ctx, platform=None):
-    global users
     author = ctx.message.author
     author_id = ctx.message.author.id
 
@@ -65,7 +64,7 @@ async def mode(ctx, platform=None):
         await ctx.send(embed=emb)
         return False
 
-    if func_bot.set_user_mode(users, author_id, platform):
+    if func_bot.set_user_mode(author_id, platform):
         emb = discord.Embed(colour=discord.Colour.green(), timestamp=datetime.datetime.utcnow())
         emb.add_field(name=author, value=f"Изменил свой режим на '{platform}'!")
     else:
@@ -77,79 +76,74 @@ async def mode(ctx, platform=None):
 
 @client.command()
 async def p(ctx, ally=None):
-    global users
     author = ctx.message.author
     author_id = ctx.message.author.id
-
+    emb = discord.Embed(colour=discord.Colour.green(), timestamp=datetime.datetime.utcnow())
     if not ally:
-        ally = func_bot.get_user_ally(author_id, users)
-
+        ally = func_bot.get_user_ally(author_id)
     if not ally:
-        emb = discord.Embed(colour=discord.Colour.red(), timestamp=datetime.datetime.utcnow())
+        emb.colour = discord.Colour.red()
         emb.add_field(name=author, value="Вы не указали <<ALLY>>, либо он некорректный!")
         await ctx.send(embed=emb)
         return False
-
     try:
-        mode = func_bot.get_user_mode(author_id, users)
-        player_name, data = bridge.player_info(ally, mode)
+        mode = func_bot.get_user_mode(author_id)
+        player_name, data = bridge.player_info(ally)
     except:
-        emb = discord.Embed(colour=discord.Colour.red(), timestamp=datetime.datetime.utcnow())
+        emb.colour = discord.Colour.red()
         emb.add_field(name=author, value="Возникла ошибка!")
     else:
-        emb = discord.Embed(title=f"Информация об игроке: {player_name}", colour=discord.Colour.green(),
-                            timestamp=datetime.datetime.utcnow())
+        emb.title = f'Информация об игроке: {player_name}'
+        s = []
         for el in data:
-            if mode == "pc":
-                if len(el) > 2:
-                    emb.add_field(name=el[0], value=el[1])
-                    temp_str = "::\n" * el[2].count('\n')
-                    emb.add_field(name="\u200b", value=temp_str, inline=True)
-                    emb.add_field(name="\u200b", value=el[2], inline=True)
+            s.append(el[0])
+            for pole in el[1]:
+                if mode == 'pc':
+                    add = ' ' * (25 - len(pole[0]))
+                    s.append(f'{pole[0]} {add} {pole[1]}')
                 else:
-                    emb.add_field(name=el[0], value=el[1], inline=False)
-            else:
-                emb.add_field(name=el[0], value=el[1], inline=False)
+                    s.append(f'{pole[0]}: {pole[1]}')
+        d = '```' + '\n'.join(s) + '```'
+        emb.description = d
     finally:
         await ctx.send(embed=emb)
 
 
 @client.command()
 async def ga(ctx, ally=None, ally2=None):
-    global users
     author = ctx.message.author
     author_id = ctx.message.author.id
-
+    emb = discord.Embed(colour=discord.Colour.green(), timestamp=datetime.datetime.utcnow())
     if not ally or not ally2:
         if not ally:
-            ally = func_bot.get_user_ally(author_id, users)
+            ally = func_bot.get_user_ally(author_id)
         else:
-            ally2 = func_bot.get_user_ally(author_id, users)
-
+            ally2 = func_bot.get_user_ally(author_id)
     if not ally or not ally2:
         emb = discord.Embed(colour=discord.Colour.red(), timestamp=datetime.datetime.utcnow())
         emb.add_field(name=author, value="Вы не указали <<ALLY>> <<ALLY>>, либо они некорректны!")
         await ctx.send(embed=emb)
         return False
-
-    allys = [ally, ally2]
-
     try:
-        mode = func_bot.get_user_mode(author_id, users)
-        player_name, data = bridge.players_compare(allys, mode)
+        allys = [ally, ally2]
+        mode = func_bot.get_user_mode(author_id)
+        player_name, data = bridge.players_compare(allys)
     except:
-        emb = discord.Embed(colour=discord.Colour.red(), timestamp=datetime.datetime.utcnow())
+        emb.colour = discord.Colour.red()
         emb.add_field(name=author, value="Возникла ошибка!")
     else:
-        emb = discord.Embed(title=f"Сравнение игроков: {player_name[0]} vs {player_name[1]}", colour=discord.Colour.green(), timestamp=datetime.datetime.utcnow())
-
+        emb.title = f"Сравнение игроков: {player_name[0]} vs {player_name[1]}"
+        s = []
         for el in data:
-            if mode == "pc":
-                emb.add_field(name=el[0], value=el[1])
-                emb.add_field(name="\u200b", value=el[2], inline=True)
-                emb.add_field(name="\u200b", value=el[3], inline=True)
-            else:
-                emb.add_field(name=el[0], value=el[1], inline=False)
+            s.append(el[0])
+            for pole in el[1]:
+                if mode == 'pc':
+                    add = ' ' * (25 - len(pole[0]))
+                    s.append(f'{pole[0]} {add} {pole[1]} VS {pole[2]}')
+                else:
+                    s.append(f'{pole[0]}: {pole[1]} VS {pole[2]}')
+        d = '```' + '\n'.join(s) + '```'
+        emb.description = d
     finally:
         await ctx.send(embed=emb)
 

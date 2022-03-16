@@ -1,27 +1,20 @@
+from swgoh.Guild import *
 from swgoh.Player import *
 
 
 class bridge:
     @staticmethod
-    def player_info(ally, mode):
+    def player_info(ally):
         player = Player(ally)
-        if mode == "pc":
-            player_name, data = player.write_pc()
-        else:
-            player_name, data = player.write_phone()
-
-        return player_name, data
+        return player.info()
 
     @staticmethod
-    def players_compare(ally, mode):
+    def players_compare(allys):
         players = []
+        for ally in allys:
+            players.append(Player(ally))
+        return Player.compare(players)
 
-        for code in ally:
-            players.append(Player(code))
-
-        if mode == "pc":
-            player_name, data = Player.compare_pc(players)
-        else:
-            player_name, data = Player.compare_phone(players)
-
-        return player_name, data
+    @staticmethod
+    def guild_info(ally):
+        guild = Guild(ally)

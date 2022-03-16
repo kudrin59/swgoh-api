@@ -99,7 +99,7 @@ class func:
 
     @staticmethod
     def get_mods(units):
-        rez = [["pips", "Т12+", 0, 6], ["UNITSTATSPEED", "Скорость 15+", 0, 15],
+        rez = [["pips", "МК6", 0, 6], ["UNITSTATSPEED", "Скорость 15+", 0, 15],
                ["UNITSTATSPEED", "Скорость 20+", 0, 20], ["UNITSTATSPEED", "Скорость 25+", 0, 25]]
         max_speed = 999
 
@@ -148,8 +148,8 @@ class func:
 
         for unit in units:
             for skill in unit['skills']:
-                if skill['isZeta']:
-                    if skill['id'] in omicron_skills:
+                if skill['id'] in omicron_skills:
+                    if skill['isZeta']:
                         if skill['tier'] == skill['tiers']:
                             omicrons += 1
                             temp_unit = [unit['nameKey'], unit['rarity'], unit['gear']]
@@ -159,7 +159,12 @@ class func:
                             zetas += 1
                     else:
                         if skill['tier'] == skill['tiers']:
-                            zetas += 1
+                            omicrons += 1
+                            temp_unit = [unit['nameKey'], unit['rarity'], unit['gear']]
+                            omicron_units.append(temp_unit)
+                else:
+                    if skill['tier'] == skill['tiers'] and skill['isZeta']:
+                        zetas += 1
 
         return zetas, omicrons, omicron_units
 
@@ -211,15 +216,9 @@ class func:
 
         for unit in units:
             if unit['combatType'] == 'SHIP' and unit['defId'].find("CAPITAL") > -1:
-                capitals.append(unit['nameKey'] + ": " + str(unit['rarity']) + "⭐")
+                capitals.append([unit['nameKey'], unit['rarity']])
 
-        rez = ""
-        for i in range(len(capitals)):
-            rez += capitals[i]
-            if i < len(capitals) - 1:
-                rez += ", "
-
-        return rez
+        return capitals
 
     @staticmethod
     def get_unit_name(units, def_id):
