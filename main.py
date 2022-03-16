@@ -22,13 +22,10 @@ async def on_ready():
 @client.command()
 async def help(ctx):
     emb = discord.Embed(title="Список комманд", colour=discord.Colour.green(), timestamp=datetime.datetime.utcnow())
-
     emb.add_field(name='Сохранить ALLYCODE', value=f'{prefix}reg <<ALLY>>', inline=False)
     emb.add_field(name='Режим отображения', value=f'{prefix}mode <<pc/phone>>', inline=False)
     emb.add_field(name='Информация об игроке', value=f'{prefix}p <<ALLY>>', inline=False)
     emb.add_field(name='Сравнить игроков', value=f'{prefix}ga <<ALLY>> <<ALLY>>', inline=False)
-    emb.add_field(name='Сравнить игроков по персонажу', value=f'{prefix}!gac <<ALLY>> <<ALLY>> <<Точное название '
-                                                              f'персонажа>>', inline=False)
     await ctx.send(embed=emb)
 
 
