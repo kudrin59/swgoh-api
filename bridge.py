@@ -19,3 +19,10 @@ class bridge:
     def guild_info(ally):
         guild = Guild(ally)
         return guild.info()
+
+    @staticmethod
+    def guilds_compare(allys):
+        guilds = []
+        for ally in allys:
+            guilds.append(Guild(ally))
+        return Guild.compare(guilds)

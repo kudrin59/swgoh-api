@@ -25,7 +25,7 @@ async def help(ctx):
     emb.add_field(name='Режим отображения', value=f'{prefix}mode <<pc/phone>>', inline=False)
     emb.add_field(name='Информация об игроке', value=f'{prefix}p <<ALLY>>', inline=False)
     emb.add_field(name='Сравнить игроков', value=f'{prefix}ga <<ALLY>> <<ALLY>>', inline=False)
-    emb.add_field(name='Информация об гильдии', value=f'{prefix}g <<ALLY>>', inline=False)
+    emb.add_field(name='Информация о гильдии', value=f'{prefix}g <<ALLY>>', inline=False)
     await ctx.send(embed=emb)
 
 
@@ -91,15 +91,16 @@ async def p(ctx, ally=None):
         emb.colour = discord.Colour.green()
         emb.title = f'Информация об игроке: {player_name}'
         s = []
+        d = ''
         for el in data:
-            s.append(el[0])
+            s.clear()
             for pole in el[1]:
                 if mode == 'pc':
-                    add = ' ' * (30 - len(pole[0]))
-                    s.append(f'{pole[0]} {add} {pole[1]}')
+                    add = ' ' * (28 - len(pole[0]))
+                    s.append(f'{pole[0]} {add}:: {pole[1]}')
                 else:
                     s.append(f'{pole[0]}: {pole[1]}')
-        d = '```' + '\n'.join(s) + '```'
+            d += '**' + el[0] + '**```' + '\n'.join(s) + '```'
         emb.description = d
     finally:
         await msg.delete()
@@ -136,15 +137,16 @@ async def ga(ctx, ally=None, ally2=None):
         emb.colour = discord.Colour.green()
         emb.title = f"Сравнение игроков: {player_name[0]} vs {player_name[1]}"
         s = []
+        d = ''
         for el in data:
-            s.append(el[0])
+            s.clear()
             for pole in el[1]:
                 if mode == 'pc':
-                    add = ' ' * (30 - len(pole[0]))
-                    s.append(f'{pole[0]} {add} {pole[1]} VS {pole[2]}')
+                    add = ' ' * (28 - len(pole[0]))
+                    s.append(f'{pole[0]} {add}:: {pole[1]} vs {pole[2]}')
                 else:
-                    s.append(f'{pole[0]}: {pole[1]} VS {pole[2]}')
-        d = '```' + '\n'.join(s) + '```'
+                    s.append(f'{pole[0]}: {pole[1]} vs {pole[2]}')
+            d += '**' + el[0] + '**```' + '\n'.join(s) + '```'
         emb.description = d
     finally:
         await msg.delete()
@@ -177,15 +179,61 @@ async def g(ctx, ally=None):
         emb.colour = discord.Colour.green()
         emb.title = f'Информация о гильдии: {guild_name}'
         s = []
+        d = ''
         for el in data:
-            s.append(el[0])
+            s.clear()
             for pole in el[1]:
                 if mode == 'pc':
-                    add = ' ' * (30 - len(pole[0]))
-                    s.append(f'{pole[0]} {add} {pole[1]}')
+                    add = ' ' * (28 - len(pole[0]))
+                    s.append(f'{pole[0]} {add}:: {pole[1]}')
                 else:
                     s.append(f'{pole[0]}: {pole[1]}')
-        d = '```' + '\n'.join(s) + '```'
+            d += '**' + el[0] + '**```' + '\n'.join(s) + '```'
+        emb.description = d
+    finally:
+        await msg.delete()
+        await ctx.send(embed=emb)
+
+@client.command()
+async def test(ctx, ally=None, ally2=None):
+    author = ctx.message.author
+    author_id = ctx.message.author.id
+    emb = discord.Embed(colour=discord.Colour.dark_gray(), timestamp=datetime.datetime.utcnow())
+    emb.add_field(name=author, value="Выполнение команды...")
+    msg = await ctx.send(embed=emb)
+    emb.clear_fields()
+    emb.colour = discord.Colour.red()
+    if not ally or not ally2:
+        if not ally:
+            ally = func_bot.get_user_ally(author_id)
+        else:
+            ally2 = func_bot.get_user_ally(author_id)
+    if not ally or not ally2:
+        await msg.delete()
+        emb.add_field(name=author, value="Вы не указали <<ALLY>> <<ALLY>>, либо он некорректный!")
+        await ctx.send(embed=emb)
+        return False
+    print(f'[{datetime.datetime.utcnow()}] Пользователь "{author}": {prefix}test {ally} {ally2}')
+    try:
+        allys = [ally, ally2]
+        mode = func_bot.get_user_mode(author_id)
+        guild_name, data = bridge.guilds_compare(allys)
+    except:
+        emb.add_field(name=author, value="Возникла ошибка!")
+    else:
+        emb.colour = discord.Colour.green()
+        emb.title = f"Сравнение гильдий: {guild_name[0]} vs {guild_name[1]}"
+        s = []
+        d = ''
+        for el in data:
+            s.clear()
+            for pole in el[1]:
+                if mode == 'pc':
+                    add = ' ' * (28 - len(pole[0]))
+                    s.append(f'{pole[0]} {add}:: {pole[1]} vs {pole[2]}')
+                else:
+                    s.append(f'{pole[0]}: {pole[1]} vs {pole[2]}')
+            d += '**' + el[0] + '**```' + '\n'.join(s) + '```'
         emb.description = d
     finally:
         await msg.delete()
