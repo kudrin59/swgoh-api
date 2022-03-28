@@ -44,12 +44,12 @@ class Player:
         data = self.p_omicrons(data)
         data = self.p_arena(data)
         data = self.p_flagmans(data)
-        data = self.p_gears(data)
-        data = self.p_mods(data)
         data = self.p_toons1(data)
         data = self.p_toons2(data)
         data = self.p_toons3(data)
         data = self.p_toons4(data)
+        data = self.p_gears(data)
+        data = self.p_mods(data)
         return data
 
     def p_obzor(self, data):
@@ -110,22 +110,6 @@ class Player:
         return data
 
     def p_toons1(self, data):
-        if len(self.toons1) > 0:
-            temp = []
-            for unit in self.toons1:
-                temp.append([unit[0], f'Тир {unit[1]}, {unit[2]}⭐'])
-            data.append(['=== Одиночные Путешествия ===', temp])
-        return data
-
-    def p_toons2(self, data):
-        if len(self.toons2) > 0:
-            temp = []
-            for unit in self.toons2:
-                temp.append([unit[0], f'Тир {unit[1]}, {unit[2]}⭐'])
-            data.append(['=== Путешествия Гильдий ===', temp])
-        return data
-
-    def p_toons3(self, data):
         if len(self.toons3) > 0:
             temp = []
             for unit in self.toons3:
@@ -133,12 +117,29 @@ class Player:
             data.append(['=== Легенды ===', temp])
         return data
 
-    def p_toons4(self, data):
+
+    def p_toons2(self, data):
         if len(self.toons4) > 0:
             temp = []
             for unit in self.toons4:
                 temp.append([unit[0], f'Тир {unit[1]}, {unit[2]}⭐'])
             data.append(['=== Завоевания ===', temp])
+        return data
+
+    def p_toons3(self, data):
+        if len(self.toons1) > 0:
+            temp = []
+            for unit in self.toons1:
+                temp.append([unit[0], f'Тир {unit[1]}, {unit[2]}⭐'])
+            data.append(['=== Одиночные Путешествия ===', temp])
+        return data
+
+    def p_toons4(self, data):
+        if len(self.toons2) > 0:
+            temp = []
+            for unit in self.toons2:
+                temp.append([unit[0], f'Тир {unit[1]}, {unit[2]}⭐'])
+            data.append(['=== Путешествия Гильдий ===', temp])
         return data
 
     @staticmethod

@@ -7,7 +7,6 @@ class Guild:
         users_data = self.get_users_info(players_ally)
         self.zetas, self.omicrons, self.count_omicrons = self.get_zeta_omicron(users_data)
         self.toons = self.get_toons(users_data)
-        print(self.get_count_unit)
         self.count_legs = self.get_count_unit(self.toons)
         self.mods = self.get_mods(users_data)
         self.gears = self.get_gears(users_data)

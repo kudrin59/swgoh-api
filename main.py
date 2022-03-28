@@ -26,6 +26,7 @@ async def help(ctx):
     emb.add_field(name='Информация об игроке', value=f'{prefix}p <<ALLY>>', inline=False)
     emb.add_field(name='Сравнить игроков', value=f'{prefix}ga <<ALLY>> <<ALLY>>', inline=False)
     emb.add_field(name='Информация о гильдии', value=f'{prefix}g <<ALLY>>', inline=False)
+    emb.add_field(name='Сравнить гильдии', value=f'{prefix}tw <<ALLY>> <<ALLY>>', inline=False)
     await ctx.send(embed=emb)
 
 
@@ -194,8 +195,9 @@ async def g(ctx, ally=None):
         await msg.delete()
         await ctx.send(embed=emb)
 
+
 @client.command()
-async def test(ctx, ally=None, ally2=None):
+async def tw(ctx, ally=None, ally2=None):
     author = ctx.message.author
     author_id = ctx.message.author.id
     emb = discord.Embed(colour=discord.Colour.dark_gray(), timestamp=datetime.datetime.utcnow())
