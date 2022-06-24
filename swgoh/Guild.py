@@ -198,12 +198,6 @@ class Guild:
         payload['allycodes'] = allys
         payload['language'] = "rus_ru"
         payload['enums'] = True
-        payload['project'] = {"name": 1,
-                              "stats": 1,
-                              "roster": 1,
-                              "arena": 1,
-                              'grandArena': 1
-                              }
 
         data = sw.fetchPlayers(payload)
 
